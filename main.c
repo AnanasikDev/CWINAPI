@@ -1,11 +1,18 @@
+#include <stdio.h>
 #include <windows.h>
+#include <windowsx.h>
 
 const char gClassName[] = "MyWindowClass";
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
     switch (msg){
         case WM_LBUTTONDOWN:
-            MessageBox(NULL, "You are sneaky:D", "Hehehhee", MB_ICONINFORMATION | MB_YESNO);
+            ; // avoids macros problems
+            int x = GET_X_LPARAM(lParam);
+            int y = GET_Y_LPARAM(lParam);
+            char buf[50];
+            snprintf(buf, 50, "x = %i, y = %i", x, y);
+            MessageBox(NULL, buf, "You are sneaky:D", MB_ICONINFORMATION | MB_YESNO);
             break;
         case WM_CLOSE:
             DestroyWindow(hwnd);
