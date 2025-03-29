@@ -1,21 +1,48 @@
-#include <stdio.h>
-#include <windows.h>
-#include <windowsx.h>
+#include "ui.h"
 
 const char gClassName[] = "MyWindowClass";
+#define IDC_SOMEBUTTON 101
+BOOL askToQuit = 0;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
     switch (msg){
-        case WM_LBUTTONDOWN:
+
+        case WM_CREATE:{
+
+            GenerateUI(hwnd, msg, wParam, lParam);
+        }
+        return 0;
+
+        case WM_COMMAND:
+        {
+            int wmId = LOWORD(wParam);
+            int wmEvent = HIWORD(wParam);
+
+            switch (wmId){
+                case IDC_SOMEBUTTON:
+                    if (wmEvent == BN_CLICKED){
+                        MessageBox(NULL, "You pressed my button!", "Heh", MB_ICONINFORMATION | MB_OK);
+                        return 0;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+            break;
+        case WM_RBUTTONDOWN:
             ; // avoids macros problems
             int x = GET_X_LPARAM(lParam);
             int y = GET_Y_LPARAM(lParam);
             char buf[50];
             snprintf(buf, 50, "x = %i, y = %i", x, y);
-            MessageBox(NULL, buf, "You are sneaky:D", MB_ICONINFORMATION | MB_YESNO);
+            MessageBox(NULL, buf, "You are sneaky:D", MB_ICONINFORMATION);
             break;
         case WM_CLOSE:
-            DestroyWindow(hwnd);
+            if (!askToQuit || MessageBox(NULL, "Really quit?", "Quit?", MB_ICONQUESTION | MB_YESNO) == IDYES){
+                DestroyWindow(hwnd);
+            }
             break;
         case WM_DESTROY:
             PostQuitMessage(0);
