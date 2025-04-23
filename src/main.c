@@ -1,7 +1,6 @@
 #include "ui.h"
 
 const char gClassName[] = "MyWindowClass";
-#define IDC_SOMEBUTTON 101
 BOOL askToQuit = 0;
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){

@@ -8,22 +8,32 @@ int GenerateUI(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
         return 0;
     }
 
-    hwndButton = CreateWindowEx(
-        0,
-        "BUTTON",
-        "Button ig?",
-        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-        10, 10,
-        60, 25,
-        hwnd,
-        NULL,
-        hInstance,
-        NULL
-    );
+    hwndButton = CreateButton(hwnd, hInstance, "BTN??", IDC_SOMEBUTTON);
 
     if (hwndButton == NULL){
         MessageBox(NULL, "Button init failed.", "ERror", MB_ICONEXCLAMATION | MB_OK);
         return 0;
     }
     
+}
+
+HWND CreateButton(HWND hwnd, HINSTANCE hInstance, char name[], int id){
+    HWND hwndButton = CreateWindowEx(
+        0,
+        "BUTTON",
+        name,
+        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        10, 10,
+        60, 25,
+        hwnd,
+        (HMENU)id,
+        hInstance,
+        NULL
+    );
+
+    return hwndButton;
+}
+
+void OnButtonClicked(HWND hwnd){
+    hwnd;
 }
