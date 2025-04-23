@@ -3,7 +3,7 @@
 #include <memory.h>
 #include <stdlib.h>
 #include <stdint.h>
-//#include <windef.h>
+#include "graphics.h"
 
 const char gClassName[] = "MyWindowClass";
 BOOL askToQuit = 0;
@@ -18,11 +18,7 @@ static BITMAPINFO frame_bitmap_info;
 static HBITMAP frame_bitmap = 0;
 static HDC frame_device_context = 0;
 
-struct {
-    int width;
-    int height;
-    uint32_t *pixels;
-} frame = {0};
+struct sframe frame = {0, 0, NULL};
 
 void Init(){
     funcIds = (int*)malloc(funcIdsNumber * sizeof(int));
@@ -61,11 +57,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
         }
 
             break;
-        case WM_RBUTTONDOWN:
-            ; // avoids macros problems
-            char buf[50];
-            snprintf(buf, 50, "x = %i, y = %i", cursorPosition.x, cursorPosition.y);
-            MessageBox(NULL, buf, "You are sneaky:D", MB_ICONINFORMATION);
+        case WM_LBUTTONDOWN:
+            ;
+            PSetPixelsRect(cursorPosition.x - padding.left, frame.height - (cursorPosition.y - padding.top), 10, 10, COLOR(255, 0, 0));
             break;
         case WM_CLOSE:
             if (!askToQuit || MessageBox(NULL, "Really quit?", "Quit?", MB_ICONQUESTION | MB_YESNO) == IDYES){
@@ -170,9 +164,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
         TranslateMessage(&Msg);
         DispatchMessage(&Msg);
         
-        for (int p = 0; p < frame.width * frame.height; p++){
-            frame.pixels[p] = (COLOR(128, 128, 0));
-        }
+        // for (int p = 0; p < frame.width * frame.height; p++){
+        //     frame.pixels[p] = (COLOR(128, 128, 0));
+        // }
         
         InvalidateRect(hwnd, NULL, FALSE);
         UpdateWindow(hwnd);
