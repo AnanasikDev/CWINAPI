@@ -38,4 +38,8 @@ HWND CreateButton(HWND hwnd, HINSTANCE hInstance, char name[], int id, callback*
 
 void OnButtonClicked(HWND hwnd){
     MessageBox(NULL, "CUSTOM CALLBACK!!!", "meow", MB_ICONINFORMATION | MB_OK);
+
+    // HDC screen = GetDC(NULL);
+    // Rectangle(screen, 50, 50, 500, 500);
+    // Sleep(20);
 }

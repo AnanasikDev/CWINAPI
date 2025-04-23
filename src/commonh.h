@@ -4,6 +4,8 @@
 #include <windows.h>
 #include <windowsx.h>
 
+#define COLOR(r,g,b) (r << 16) + (g << 8) + b
+
 // =============================
 
 typedef void callback(HWND hwnd);

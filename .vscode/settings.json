@@ -3,6 +3,7 @@
         "**/*.txt": "glsl",
         "windows.h": "c",
         "ui.h": "c",
-        "commonh.h": "c"
+        "commonh.h": "c",
+        "windef.h": "c"
     }
 }

@@ -2,6 +2,8 @@
 #include "ui.h"
 #include <memory.h>
 #include <stdlib.h>
+#include <stdint.h>
+//#include <windef.h>
 
 const char gClassName[] = "MyWindowClass";
 BOOL askToQuit = 0;
@@ -9,6 +11,28 @@ const int funcIdsNumber = 1;
 int* funcIds = NULL;
 callback** funcCallbacks = NULL;
 int funcId = 0;
+
+// struct vector4{
+//     LONG x;
+//     LONG y;
+//     LONG z;
+//     LONG w;
+// } padding;
+// padding = {10, 10, 10, 10};
+
+//struct tagRECT pad;
+//pad.left = 10;
+struct tagRECT pad = {50, 50, 50, 50};
+
+static BITMAPINFO frame_bitmap_info;
+static HBITMAP frame_bitmap = 0;
+static HDC frame_device_context = 0;
+
+struct {
+    int width;
+    int height;
+    uint32_t *pixels;
+} frame = {0};
 
 void Init(){
     funcIds = (int*)malloc(funcIdsNumber * sizeof(int));
@@ -63,6 +87,36 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
         case WM_DESTROY:
             PostQuitMessage(0);
             break;
+
+        case WM_PAINT: {
+            static PAINTSTRUCT paint;
+            static HDC device_context;
+            device_context = BeginPaint(hwnd, &paint);
+            BitBlt(device_context,
+                    
+                    paint.rcPaint.left + pad.left, 
+                    paint.rcPaint.top + pad.top,
+                    paint.rcPaint.right - (paint.rcPaint.left + pad.left) - pad.right, 
+                    paint.rcPaint.bottom - (paint.rcPaint.top + pad.top) - pad.bottom,
+
+                    frame_device_context,
+                    paint.rcPaint.left, paint.rcPaint.top,
+                    SRCCOPY);
+            EndPaint(hwnd, &paint);
+        } break;
+
+        case WM_SIZE: {
+            frame_bitmap_info.bmiHeader.biWidth  = LOWORD(lParam);
+            frame_bitmap_info.bmiHeader.biHeight = HIWORD(lParam);
+
+            if(frame_bitmap) DeleteObject(frame_bitmap);
+            frame_bitmap = CreateDIBSection(NULL, &frame_bitmap_info, DIB_RGB_COLORS, (void**)&frame.pixels, 0, 0);
+            SelectObject(frame_device_context, frame_bitmap);
+
+            frame.width =  LOWORD(lParam);
+            frame.height = HIWORD(lParam);
+        } break;
+
         default:
             return DefWindowProc(hwnd, msg, wParam, lParam);
     }
@@ -94,6 +148,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
         return 0;
     }
 
+    frame_bitmap_info.bmiHeader.biSize = sizeof(frame_bitmap_info.bmiHeader);
+    frame_bitmap_info.bmiHeader.biPlanes = 1;
+    frame_bitmap_info.bmiHeader.biBitCount = 32;
+    frame_bitmap_info.bmiHeader.biCompression = BI_RGB;
+    frame_device_context = CreateCompatibleDC(0);
+
     hwnd = CreateWindowEx(
         WS_EX_CLIENTEDGE, 
         gClassName, 
@@ -118,6 +178,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
     while (GetMessage(&Msg, NULL, 0, 0) > 0 ){
         TranslateMessage(&Msg);
         DispatchMessage(&Msg);
+        
+        for (int p = 0; p < frame.width * frame.height; p++){
+            frame.pixels[p] = (COLOR(128, 128, 0));
+        }
+
+        InvalidateRect(hwnd, NULL, FALSE);
+        UpdateWindow(hwnd);
     }
 
     return Msg.wParam;
