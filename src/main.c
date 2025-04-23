@@ -1,7 +1,26 @@
+#include "commonh.h"
 #include "ui.h"
+#include <memory.h>
+#include <stdlib.h>
 
 const char gClassName[] = "MyWindowClass";
 BOOL askToQuit = 0;
+const int funcIdsNumber = 1;
+int* funcIds = NULL;
+callback** funcCallbacks = NULL;
+int funcId = 0;
+
+void Init(){
+    funcIds = (int*)malloc(funcIdsNumber * sizeof(int));
+    funcCallbacks = (callback**)malloc(funcIdsNumber * sizeof(int));
+}
+
+void Quit(HWND hwnd){
+    free(funcIds);
+    free(funcCallbacks);
+
+    DestroyWindow(hwnd);
+}
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
     switch (msg){
@@ -17,15 +36,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
             int wmId = LOWORD(wParam);
             int wmEvent = HIWORD(wParam);
 
-            switch (wmId){
-                case IDC_SOMEBUTTON:
+            for (int i = 0; i < funcIdsNumber; i++){
+                if (wmId == funcIds[i]){
                     if (wmEvent == BN_CLICKED){
-                        MessageBox(NULL, "You pressed my button!", "Heh", MB_ICONINFORMATION | MB_OK);
+                        (*funcCallbacks[i])(hwnd);
                         return 0;
                     }
-                    break;
-                default:
-                    break;
+                }
             }
         }
 
@@ -40,7 +57,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
             break;
         case WM_CLOSE:
             if (!askToQuit || MessageBox(NULL, "Really quit?", "Quit?", MB_ICONQUESTION | MB_YESNO) == IDYES){
-                DestroyWindow(hwnd);
+                Quit(hwnd);
             }
             break;
         case WM_DESTROY:
@@ -53,6 +70,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow){
+
+    Init();
+
     WNDCLASSEX wc;
     HWND hwnd;
     MSG Msg;

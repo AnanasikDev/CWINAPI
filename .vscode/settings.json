@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "**/*.txt": "glsl",
+        "windows.h": "c",
+        "ui.h": "c",
+        "commonh.h": "c"
+    }
+}

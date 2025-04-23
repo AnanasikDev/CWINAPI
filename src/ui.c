@@ -8,16 +8,15 @@ int GenerateUI(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
         return 0;
     }
 
-    hwndButton = CreateButton(hwnd, hInstance, "BTN??", IDC_SOMEBUTTON);
+    HWND hwndButton = CreateButton(hwnd, hInstance, "BTN??", IDC_SOMEBUTTON, &OnButtonClicked);
 
     if (hwndButton == NULL){
         MessageBox(NULL, "Button init failed.", "ERror", MB_ICONEXCLAMATION | MB_OK);
         return 0;
     }
-    
 }
 
-HWND CreateButton(HWND hwnd, HINSTANCE hInstance, char name[], int id){
+HWND CreateButton(HWND hwnd, HINSTANCE hInstance, char name[], int id, callback* cbfun){
     HWND hwndButton = CreateWindowEx(
         0,
         "BUTTON",
@@ -30,10 +29,13 @@ HWND CreateButton(HWND hwnd, HINSTANCE hInstance, char name[], int id){
         hInstance,
         NULL
     );
+    funcCallbacks[funcId] = cbfun;
+    funcIds[funcId] = id;
+    funcId++; // increase global ID counter for next element
 
     return hwndButton;
 }
 
 void OnButtonClicked(HWND hwnd){
-    hwnd;
+    MessageBox(NULL, "CUSTOM CALLBACK!!!", "meow", MB_ICONINFORMATION | MB_OK);
 }
