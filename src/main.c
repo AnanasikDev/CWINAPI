@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "graphics.h"
+#include "input.h"
 
 const char gClassName[] = "MyWindowClass";
 BOOL askToQuit = 0;
@@ -12,7 +13,8 @@ int* funcIds = NULL;
 callback** funcCallbacks = NULL;
 int funcId = 0;
 struct tagRECT padding = {50, 50, 50, 50};
-struct tagPOINT cursorPosition = {0, 0};
+struct tagPOINT windowCursorPosition = {0, 0};
+struct tagPOINT drawingCursorPosition = {0, 0};
 
 static BITMAPINFO frame_bitmap_info;
 static HBITMAP frame_bitmap = 0;
@@ -31,6 +33,8 @@ void Quit(HWND hwnd){
 
     DestroyWindow(hwnd);
 }
+
+void Update();
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
     switch (msg){
@@ -59,7 +63,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
             break;
         case WM_LBUTTONDOWN:
             ;
-            PSetPixelsRect(cursorPosition.x - padding.left, frame.height - (cursorPosition.y - padding.top), 10, 10, COLOR(255, 0, 0));
+            isLMBdown = TRUE;
+            break;
+        case WM_LBUTTONUP:
+            isLMBdown = FALSE;
             break;
         case WM_CLOSE:
             if (!askToQuit || MessageBox(NULL, "Really quit?", "Quit?", MB_ICONQUESTION | MB_YESNO) == IDYES){
@@ -159,18 +166,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
     UpdateWindow(hwnd);
 
     while (GetMessage(&Msg, NULL, 0, 0) > 0 ){
-        GetCursorPos(&cursorPosition);
-        MapWindowPoints(NULL, hwnd, &cursorPosition, 1);
+        GetCursorPos(&windowCursorPosition);
+        MapWindowPoints(NULL, hwnd, &windowCursorPosition, 1);
+        drawingCursorPosition.x = windowCursorPosition.x - padding.left;
+        drawingCursorPosition.y = frame.height - (windowCursorPosition.y - padding.top);
+
         TranslateMessage(&Msg);
         DispatchMessage(&Msg);
         
-        // for (int p = 0; p < frame.width * frame.height; p++){
-        //     frame.pixels[p] = (COLOR(128, 128, 0));
-        // }
+        Update();
         
         InvalidateRect(hwnd, NULL, FALSE);
         UpdateWindow(hwnd);
     }
 
     return Msg.wParam;
+}
+
+void Update(){
+
+    if (isLMBdown){
+        int radius = 10;
+        PSetPixelsRect(drawingCursorPosition.x - radius / 2, drawingCursorPosition.y - radius / 2, radius, radius, COLOR(255, 0, 0));
+    }
 }

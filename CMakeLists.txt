@@ -5,4 +5,5 @@ add_executable(uiapp
     src/main.c
     src/ui.c
     src/graphics.c
+    src/input.c
 )

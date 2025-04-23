@@ -19,4 +19,3 @@ struct vector2i{
     int x;
     int y;
 };
-extern struct tagPOINT cursorPosition;
