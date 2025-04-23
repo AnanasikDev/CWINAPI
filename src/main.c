@@ -11,18 +11,8 @@ const int funcIdsNumber = 1;
 int* funcIds = NULL;
 callback** funcCallbacks = NULL;
 int funcId = 0;
-
-// struct vector4{
-//     LONG x;
-//     LONG y;
-//     LONG z;
-//     LONG w;
-// } padding;
-// padding = {10, 10, 10, 10};
-
-//struct tagRECT pad;
-//pad.left = 10;
-struct tagRECT pad = {50, 50, 50, 50};
+struct tagRECT padding = {50, 50, 50, 50};
+struct tagPOINT cursorPosition = {0, 0};
 
 static BITMAPINFO frame_bitmap_info;
 static HBITMAP frame_bitmap = 0;
@@ -73,10 +63,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
             break;
         case WM_RBUTTONDOWN:
             ; // avoids macros problems
-            int x = GET_X_LPARAM(lParam);
-            int y = GET_Y_LPARAM(lParam);
             char buf[50];
-            snprintf(buf, 50, "x = %i, y = %i", x, y);
+            snprintf(buf, 50, "x = %i, y = %i", cursorPosition.x, cursorPosition.y);
             MessageBox(NULL, buf, "You are sneaky:D", MB_ICONINFORMATION);
             break;
         case WM_CLOSE:
@@ -94,10 +82,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
             device_context = BeginPaint(hwnd, &paint);
             BitBlt(device_context,
                     
-                    paint.rcPaint.left + pad.left, 
-                    paint.rcPaint.top + pad.top,
-                    paint.rcPaint.right - (paint.rcPaint.left + pad.left) - pad.right, 
-                    paint.rcPaint.bottom - (paint.rcPaint.top + pad.top) - pad.bottom,
+                    paint.rcPaint.left + padding.left, 
+                    paint.rcPaint.top + padding.top,
+                    paint.rcPaint.right - (paint.rcPaint.left + padding.left) - padding.right, 
+                    paint.rcPaint.bottom - (paint.rcPaint.top + padding.top) - padding.bottom,
 
                     frame_device_context,
                     paint.rcPaint.left, paint.rcPaint.top,
@@ -115,6 +103,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
 
             frame.width =  LOWORD(lParam);
             frame.height = HIWORD(lParam);
+            InvalidateRect(hwnd, NULL, TRUE);
         } break;
 
         default:
@@ -176,13 +165,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
     UpdateWindow(hwnd);
 
     while (GetMessage(&Msg, NULL, 0, 0) > 0 ){
+        GetCursorPos(&cursorPosition);
+        MapWindowPoints(NULL, hwnd, &cursorPosition, 1);
         TranslateMessage(&Msg);
         DispatchMessage(&Msg);
         
         for (int p = 0; p < frame.width * frame.height; p++){
             frame.pixels[p] = (COLOR(128, 128, 0));
         }
-
+        
         InvalidateRect(hwnd, NULL, FALSE);
         UpdateWindow(hwnd);
     }

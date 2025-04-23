@@ -14,3 +14,9 @@ extern const int funcIdsNumber;
 extern int* funcIds;
 extern callback** funcCallbacks;
 extern int funcId;
+
+struct vector2i{
+    int x;
+    int y;
+};
+extern struct tagPOINT cursorPosition;
