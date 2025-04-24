@@ -5,17 +5,19 @@
 #include <windowsx.h>
 
 #define COLOR(r,g,b) (r << 16) + (g << 8) + b
+#define CHANNEL_R(i) i >> 16 
+#define CHANNEL_G(i) (i >> 8) & 255
+#define CHANNEL_B(i) i & 255
 
 // =============================
 
-typedef void callback(HWND hwnd);
+typedef void callback(HWND hwnd, int idc);
 
-extern const int funcIdsNumber;
 extern int* funcIds;
 extern callback** funcCallbacks;
-extern int funcId;
+extern int funcIdCunter;
 
-struct vector2i{
+typedef struct{
     int x;
     int y;
-};
+} vector2i;

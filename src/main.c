@@ -5,14 +5,18 @@
 #include <stdint.h>
 #include "graphics.h"
 #include "input.h"
+#include "brush.h"
 
+// ============= SETTINGS =============
 const char gClassName[] = "MyWindowClass";
 BOOL askToQuit = 0;
-const int funcIdsNumber = 1;
+struct tagRECT padding = {50, 50, 50, 50};
+uint32_t selectedColor = COLOR(255, 0, 0);
+// ====================================
+
 int* funcIds = NULL;
 callback** funcCallbacks = NULL;
-int funcId = 0;
-struct tagRECT padding = {50, 50, 50, 50};
+int funcIdCunter = 0;
 struct tagPOINT windowCursorPosition = {0, 0};
 struct tagPOINT drawingCursorPosition = {0, 0};
 
@@ -20,16 +24,33 @@ static BITMAPINFO frame_bitmap_info;
 static HBITMAP frame_bitmap = 0;
 static HDC frame_device_context = 0;
 
+int* colors = NULL;
+
 struct sframe frame = {0, 0, NULL};
 
 void Init(){
-    funcIds = (int*)malloc(funcIdsNumber * sizeof(int));
-    funcCallbacks = (callback**)malloc(funcIdsNumber * sizeof(int));
+    funcIds = (int*)malloc(funcIdCunter * sizeof(int));
+    funcCallbacks = (callback**)malloc(funcIdCunter * sizeof(int));
+    colors = (int*)malloc(MAX_PREDEF_COLORS * sizeof(int));
+    colors[0] = COLOR(255, 255, 255); // white
+    colors[1] = COLOR(0, 0, 0);       // black
+    colors[2] = COLOR(140, 140, 140); // light grey
+    colors[3] = COLOR(80, 80, 80);    // dark grey
+    colors[4] = COLOR(255, 0, 0);     // red
+    colors[5] = COLOR(255, 128, 0);   // orange
+    colors[6] = COLOR(255, 255, 0);   // yellow
+    colors[7] = COLOR(80, 255, 83);   // lime
+    colors[8] = COLOR(0, 255, 0);     // green
+    colors[9] = COLOR(128, 128, 255); // light blue
+    colors[10] = COLOR(0, 0, 255);    // blue
+    colors[11] = COLOR(255, 0, 255);  // purple
+    colors[12] = COLOR(255, 128, 230);  // pink
 }
 
 void Quit(HWND hwnd){
     free(funcIds);
     free(funcCallbacks);
+    free(colors);
 
     DestroyWindow(hwnd);
 }
@@ -50,10 +71,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
             int wmId = LOWORD(wParam);
             int wmEvent = HIWORD(wParam);
 
-            for (int i = 0; i < funcIdsNumber; i++){
+            for (int i = 0; i < funcIdCunter; i++){
                 if (wmId == funcIds[i]){
                     if (wmEvent == BN_CLICKED){
-                        (*funcCallbacks[i])(hwnd);
+                        (*funcCallbacks[i])(hwnd, wmId);
                         return 0;
                     }
                 }
@@ -187,6 +208,7 @@ void Update(){
 
     if (isLMBdown){
         int radius = 10;
-        PSetPixelsRect(drawingCursorPosition.x - radius / 2, drawingCursorPosition.y - radius / 2, radius, radius, COLOR(255, 0, 0));
+        PSetPixelsRect(drawingCursorPosition.x - radius / 2, drawingCursorPosition.y - radius / 2, radius, radius, selectedColor);
+        //printf("(%d, %d, %d)", CHANNEL_R(selectedColor), CHANNEL_G(selectedColor), CHANNEL_B(selectedColor));
     }
 }
