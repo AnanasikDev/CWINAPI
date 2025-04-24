@@ -1,6 +1,7 @@
 #include "graphics.h"
 #include "commonh.h"
 #include <math.h>
+//#include <png.h>
 
 void PSetPixel(int x, int y, uint32_t color){
     frame.pixels[x + y * frame.width] = color;
