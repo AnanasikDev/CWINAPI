@@ -16,7 +16,7 @@
 #define IDC_PREDEF_COLOR_PURPLE         1021
 #define IDC_PREDEF_COLOR_PINK           1022
 
-#define DYNAMIC_ELEMENTS_COUNT 3
+#define DYNAMIC_ELEMENTS_COUNT 5
 
 void GenerateUI(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 HWND CreateButton(HWND hwnd, HINSTANCE hInstance, vector2i pos, vector2i size, char name[], int id, callback* cbfun);

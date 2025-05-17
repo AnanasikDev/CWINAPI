@@ -12,14 +12,19 @@ void GenerateUI(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
         return;
     }
 
-    CreateButton(hwnd, hInstance, (vector2i) {0, 0}, (vector2i) {50, 50}, "WHITE", IDC_PREDEF_COLOR_WHITE, &SelectColor);
-    CreateButton(hwnd, hInstance, (vector2i) {0, 60}, (vector2i) {50, 50}, "GREEN", IDC_PREDEF_COLOR_GREEN, &SelectColor);
-    CreateButton(hwnd, hInstance, (vector2i) {0, 120}, (vector2i) {50, 50}, "BLACK", IDC_PREDEF_COLOR_BLACK, &SelectColor);
+    vector2i size = {40, 40};
+
+    CreateButton(hwnd, hInstance, (vector2i) {0, 0}, size, "WHITE", IDC_PREDEF_COLOR_WHITE, &SelectColor);
+    CreateButton(hwnd, hInstance, (vector2i) {50, 0}, size, "GREEN", IDC_PREDEF_COLOR_GREEN, &SelectColor);
+    CreateButton(hwnd, hInstance, (vector2i) {100, 0}, size, "BLACK", IDC_PREDEF_COLOR_BLACK, &SelectColor);
+    CreateButton(hwnd, hInstance, (vector2i) {150, 0}, size, "YELLOW", IDC_PREDEF_COLOR_YELLOW, &SelectColor);
+    CreateButton(hwnd, hInstance, (vector2i) {200, 0}, size, "BLUE", IDC_PREDEF_COLOR_BLUE, &SelectColor);
 }
 
 HWND CreateButton(HWND hwnd, HINSTANCE hInstance, vector2i pos, vector2i size, char name[], int id, callback* cbfun){
     HWND hwndButton = CreateWindowEx(
-        0, //BS_OWNERDRAW
+        0,
+        //BS_OWNERDRAW,
         "BUTTON",
         name,
         WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,

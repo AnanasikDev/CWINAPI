@@ -144,14 +144,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
         //         UINT itemState = lpDrawItem->itemState; // State flags (pressed, hovered, focused, etc.)
         //         UINT buttonID = lpDrawItem->CtlID;    // The ID of the button being drawn
 
-        //         // 1. Determine the base color for this button
-        //         // You'll likely have an array or map from button ID to color
         //         COLORREF buttonColor = GetButtonColor((int)buttonID); // Your function to get color
-
-        //         // 2. Create a brush with the base color
         //         HBRUSH hBrush = CreateSolidBrush(buttonColor);
-
-        //         // 3. Fill the button's rectangle with the color
         //         FillRect(hdc, &rc, hBrush);
 
         //         // 4. Add visual feedback based on the button's state
@@ -174,7 +168,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
         //         //     DrawFocusRect(hdc, &rc);
         //         // }
 
-        //         //  // Example: Draw a highlight when hovered (requires BS_NOTIFY style on button)
+        //          // Example: Draw a highlight when hovered (requires BS_NOTIFY style on button)
         //         //  if (itemState & ODS_HOTLIGHT) {
         //         //      HPEN hPen = CreatePen(PS_SOLID, 1, RGB(128, 128, 128)); // Grey highlight border
         //         //      HGDIOBJ hOldPen = SelectObject(hdc, hPen);
