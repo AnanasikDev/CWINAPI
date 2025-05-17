@@ -4,6 +4,8 @@
 
 void GenerateUI(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
 
+    printf("GenerateUI\n");
+
     HINSTANCE hInstance = (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE);
     if (hInstance == NULL){
         MessageBox(NULL, "Failed to load hInstance", "Error", MB_ICONEXCLAMATION | MB_OK);

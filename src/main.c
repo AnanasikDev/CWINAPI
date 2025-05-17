@@ -29,6 +29,7 @@ int* colors = NULL;
 struct sframe frame = {0, 0, NULL};
 
 void Init(){
+    printf("Init\n");
     funcIds =           (int*)malloc(DYNAMIC_ELEMENTS_COUNT * sizeof(int));
     funcCallbacks =     (callback**)malloc(DYNAMIC_ELEMENTS_COUNT * sizeof(int));
     colors =            (int*)malloc(MAX_PREDEF_COLORS * sizeof(int));
@@ -58,8 +59,10 @@ void FREE(void* block){
 
 void Quit(HWND hwnd){
     FREE(funcIds);
+    for (int c = 0; c < DYNAMIC_ELEMENTS_COUNT; c++){
+        funcCallbacks[c] = NULL;
+    }
     FREE(funcCallbacks);
-    //printf("Colors: %d", MAX_PREDEF_COLORS);
     FREE(colors);
     printf("Quit");
     DestroyWindow(hwnd);
@@ -81,14 +84,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
             int wmId = LOWORD(wParam);
             int wmEvent = HIWORD(wParam);
 
-            // for (int i = 0; i < funcIdCounter; i++){
-            //     if (wmId == funcIds[i]){
-            //         if (wmEvent == BN_CLICKED){
-            //             (*funcCallbacks[i])(hwnd, wmId);
-            //             return 0;
-            //         }
-            //     }
-            // }
+            for (int i = 0; i < funcIdCounter; i++){
+                if (wmId == funcIds[i]){
+                    if (wmEvent == BN_CLICKED){
+                        (*funcCallbacks[i])(hwnd, wmId);
+                        return 0;
+                    }
+                }
+            }
         }
 
             break;
@@ -108,22 +111,22 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
             PostQuitMessage(0);
             break;
 
-        // case WM_PAINT: {
-        //     // static PAINTSTRUCT paint;
-        //     // static HDC device_context;
-        //     // device_context = BeginPaint(hwnd, &paint);
-        //     // BitBlt(device_context,
+        case WM_PAINT: {
+            static PAINTSTRUCT paint;
+            static HDC device_context;
+            device_context = BeginPaint(hwnd, &paint);
+            BitBlt(device_context,
                     
-        //     //         paint.rcPaint.left + padding.left, 
-        //     //         paint.rcPaint.top + padding.top,
-        //     //         paint.rcPaint.right - (paint.rcPaint.left + padding.left) - padding.right, 
-        //     //         paint.rcPaint.bottom - (paint.rcPaint.top + padding.top) - padding.bottom,
+                    paint.rcPaint.left + padding.left, 
+                    paint.rcPaint.top + padding.top,
+                    paint.rcPaint.right - (paint.rcPaint.left + padding.left) - padding.right, 
+                    paint.rcPaint.bottom - (paint.rcPaint.top + padding.top) - padding.bottom,
 
-        //     //         frame_device_context,
-        //     //         paint.rcPaint.left, paint.rcPaint.top,
-        //     //         SRCCOPY);
-        //     // EndPaint(hwnd, &paint);
-        // } break;
+                    frame_device_context,
+                    paint.rcPaint.left, paint.rcPaint.top,
+                    SRCCOPY);
+            EndPaint(hwnd, &paint);
+        } break;
 
         // case WM_DRAWITEM:
         // {
@@ -266,10 +269,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
         TranslateMessage(&Msg);
         DispatchMessage(&Msg);
         
-        // Update();
+        Update();
         
-        // InvalidateRect(hwnd, NULL, FALSE);
-        // UpdateWindow(hwnd);
+        InvalidateRect(hwnd, NULL, FALSE);
+        UpdateWindow(hwnd);
     }
 
     return Msg.wParam;
@@ -280,6 +283,5 @@ void Update(){
     if (isLMBdown){
         int radius = 10;
         PSetPixelsRect(drawingCursorPosition.x - radius / 2, drawingCursorPosition.y - radius / 2, radius, radius, selectedColor);
-        //printf("(%d, %d, %d)", CHANNEL_R(selectedColor), CHANNEL_G(selectedColor), CHANNEL_B(selectedColor));
     }
 }
