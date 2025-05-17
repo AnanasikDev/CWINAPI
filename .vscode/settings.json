@@ -4,6 +4,12 @@
         "windows.h": "c",
         "ui.h": "c",
         "commonh.h": "c",
-        "windef.h": "c"
+        "windef.h": "c",
+        "stdio.h": "c",
+        "input.h": "c",
+        "graphics.h": "c",
+        "stdint.h": "c",
+        "brush.h": "c",
+        "windowsx.h": "c"
     }
 }

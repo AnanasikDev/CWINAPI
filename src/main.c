@@ -1,8 +1,8 @@
-#include "commonh.h"
-#include "ui.h"
 #include <memory.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include "commonh.h"
+#include "ui.h"
 #include "graphics.h"
 #include "input.h"
 #include "brush.h"
@@ -16,7 +16,7 @@ uint32_t selectedColor = COLOR(255, 0, 0);
 
 int* funcIds = NULL;
 callback** funcCallbacks = NULL;
-int funcIdCunter = 0;
+int funcIdCounter = 0;
 struct tagPOINT windowCursorPosition = {0, 0};
 struct tagPOINT drawingCursorPosition = {0, 0};
 
@@ -29,9 +29,9 @@ int* colors = NULL;
 struct sframe frame = {0, 0, NULL};
 
 void Init(){
-    funcIds = (int*)malloc(funcIdCunter * sizeof(int));
-    funcCallbacks = (callback**)malloc(funcIdCunter * sizeof(int));
-    colors = (int*)malloc(MAX_PREDEF_COLORS * sizeof(int));
+    funcIds =           (int*)malloc(DYNAMIC_ELEMENTS_COUNT * sizeof(int));
+    funcCallbacks =     (callback**)malloc(DYNAMIC_ELEMENTS_COUNT * sizeof(int));
+    colors =            (int*)malloc(MAX_PREDEF_COLORS * sizeof(int));
     colors[0] = COLOR(255, 255, 255); // white
     colors[1] = COLOR(0, 0, 0);       // black
     colors[2] = COLOR(140, 140, 140); // light grey
@@ -47,11 +47,21 @@ void Init(){
     colors[12] = COLOR(255, 128, 230);  // pink
 }
 
-void Quit(HWND hwnd){
-    free(funcIds);
-    free(funcCallbacks);
-    free(colors);
+void FREE(void* block){
+    if (block == NULL){
+        printf("block cannot be freed; it is NULL\n");
+        return;
+    }
+    printf("block successfully freed\n");
+    free(block);
+}
 
+void Quit(HWND hwnd){
+    FREE(funcIds);
+    FREE(funcCallbacks);
+    //printf("Colors: %d", MAX_PREDEF_COLORS);
+    FREE(colors);
+    printf("Quit");
     DestroyWindow(hwnd);
 }
 
@@ -71,14 +81,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
             int wmId = LOWORD(wParam);
             int wmEvent = HIWORD(wParam);
 
-            for (int i = 0; i < funcIdCunter; i++){
-                if (wmId == funcIds[i]){
-                    if (wmEvent == BN_CLICKED){
-                        (*funcCallbacks[i])(hwnd, wmId);
-                        return 0;
-                    }
-                }
-            }
+            // for (int i = 0; i < funcIdCounter; i++){
+            //     if (wmId == funcIds[i]){
+            //         if (wmEvent == BN_CLICKED){
+            //             (*funcCallbacks[i])(hwnd, wmId);
+            //             return 0;
+            //         }
+            //     }
+            // }
         }
 
             break;
@@ -98,22 +108,83 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
             PostQuitMessage(0);
             break;
 
-        case WM_PAINT: {
-            static PAINTSTRUCT paint;
-            static HDC device_context;
-            device_context = BeginPaint(hwnd, &paint);
-            BitBlt(device_context,
+        // case WM_PAINT: {
+        //     // static PAINTSTRUCT paint;
+        //     // static HDC device_context;
+        //     // device_context = BeginPaint(hwnd, &paint);
+        //     // BitBlt(device_context,
                     
-                    paint.rcPaint.left + padding.left, 
-                    paint.rcPaint.top + padding.top,
-                    paint.rcPaint.right - (paint.rcPaint.left + padding.left) - padding.right, 
-                    paint.rcPaint.bottom - (paint.rcPaint.top + padding.top) - padding.bottom,
+        //     //         paint.rcPaint.left + padding.left, 
+        //     //         paint.rcPaint.top + padding.top,
+        //     //         paint.rcPaint.right - (paint.rcPaint.left + padding.left) - padding.right, 
+        //     //         paint.rcPaint.bottom - (paint.rcPaint.top + padding.top) - padding.bottom,
 
-                    frame_device_context,
-                    paint.rcPaint.left, paint.rcPaint.top,
-                    SRCCOPY);
-            EndPaint(hwnd, &paint);
-        } break;
+        //     //         frame_device_context,
+        //     //         paint.rcPaint.left, paint.rcPaint.top,
+        //     //         SRCCOPY);
+        //     // EndPaint(hwnd, &paint);
+        // } break;
+
+        // case WM_DRAWITEM:
+        // {
+        //     LPDRAWITEMSTRUCT lpDrawItem = (LPDRAWITEMSTRUCT)lParam;
+
+        //     // Check if this message is for one of YOUR owner-drawn buttons
+        //     // Use the button's control ID to identify it
+        //     if (lpDrawItem->CtlID >= IDC_PREDEF_COLOR_WHITE && lpDrawItem->CtlID <= IDC_PREDEF_COLOR_PINK) // Assuming your button IDs are in a range
+        //     {
+        //         printf("%d", lpDrawItem->CtlID);
+        //         // --- Perform Custom Drawing Here ---
+
+        //         HDC hdc = lpDrawItem->hDC;           // Device context to draw on
+        //         RECT rc = lpDrawItem->rcItem;         // Rectangle defining the button's area
+        //         UINT itemState = lpDrawItem->itemState; // State flags (pressed, hovered, focused, etc.)
+        //         UINT buttonID = lpDrawItem->CtlID;    // The ID of the button being drawn
+
+        //         // 1. Determine the base color for this button
+        //         // You'll likely have an array or map from button ID to color
+        //         COLORREF buttonColor = GetButtonColor((int)buttonID); // Your function to get color
+
+        //         // 2. Create a brush with the base color
+        //         HBRUSH hBrush = CreateSolidBrush(buttonColor);
+
+        //         // 3. Fill the button's rectangle with the color
+        //         FillRect(hdc, &rc, hBrush);
+
+        //         // 4. Add visual feedback based on the button's state
+        //         // Check the itemState flags
+
+        //         // Example: Draw a border when the button is pressed
+        //         // if (itemState & ODS_SELECTED) {
+        //         //     // Draw a slightly inset or darker border
+        //         //     HPEN hPen = CreatePen(PS_SOLID, 2, RGB(0, 0, 0)); // Black border
+        //         //     HGDIOBJ hOldPen = SelectObject(hdc, hPen);
+        //         //     SelectObject(hdc, GetStockObject(NULL_BRUSH)); // Don't fill
+        //         //     Rectangle(hdc, rc.left, rc.top, rc.right, rc.bottom); // Draw border
+        //         //     SelectObject(hdc, hOldPen); // Restore old pen
+        //         //     DeleteObject(hPen);         // Clean up the pen
+        //         // }
+
+        //         // // Example: Draw a focus rectangle if the button has keyboard focus
+        //         // if (itemState & ODS_FOCUS) {
+        //         //     // Draw the standard focus rectangle
+        //         //     DrawFocusRect(hdc, &rc);
+        //         // }
+
+        //         //  // Example: Draw a highlight when hovered (requires BS_NOTIFY style on button)
+        //         //  if (itemState & ODS_HOTLIGHT) {
+        //         //      HPEN hPen = CreatePen(PS_SOLID, 1, RGB(128, 128, 128)); // Grey highlight border
+        //         //      HGDIOBJ hOldPen = SelectObject(hdc, hPen);
+        //         //      SelectObject(hdc, GetStockObject(NULL_BRUSH));
+        //         //      Rectangle(hdc, rc.left, rc.top, rc.right, rc.bottom);
+        //         //      SelectObject(hdc, hOldPen);
+        //         //      DeleteObject(hPen);
+        //         //  }
+
+        //         DeleteObject(hBrush);
+        //     }
+        //     break;
+        // }
 
         case WM_SIZE: {
             frame_bitmap_info.bmiHeader.biWidth  = LOWORD(lParam);
@@ -195,10 +266,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine,
         TranslateMessage(&Msg);
         DispatchMessage(&Msg);
         
-        Update();
+        // Update();
         
-        InvalidateRect(hwnd, NULL, FALSE);
-        UpdateWindow(hwnd);
+        // InvalidateRect(hwnd, NULL, FALSE);
+        // UpdateWindow(hwnd);
     }
 
     return Msg.wParam;

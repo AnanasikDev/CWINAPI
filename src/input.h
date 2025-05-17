@@ -1,3 +1,5 @@
+#pragma once
+
 #include "commonh.h"
 
 extern BOOL isLMBdown;
