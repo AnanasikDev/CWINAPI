@@ -17,12 +17,13 @@ enum PREDEF_COLOR{
     YELLOW,
     LIME,
     GREEN,
+    TEAL,
     LIGHT_BLUE,
     BLUE,
     PURPLE,
     PINK,
 };
-#define MAX_PREDEF_COLORS 13
+#define MAX_PREDEF_COLORS 14
 
 extern COLORREF* colors;
 extern COLORREF selectedColor;

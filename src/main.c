@@ -49,15 +49,13 @@ void Init(){
     colors[4] =  RGB(255, 0, 0);     // red
     colors[5] =  RGB(255, 128, 0);   // orange
     colors[6] =  RGB(255, 255, 0);   // yellow
-    colors[7] =  RGB(80, 255, 83);   // lime
+    colors[7] =  RGB(140, 255, 130); // lime
     colors[8] =  RGB(0, 255, 0);     // green
-    colors[9] =  RGB(128, 128, 255); // light blue
-    colors[10] = RGB(0, 0, 255);     // blue
-    colors[11] = RGB(255, 0, 255);   // purple
-    colors[12] = RGB(255, 128, 230);  // pink
-
-    COLORREF red = RGB(254, 0, 0);
-    printf("red = %d = %d %d %d\n", red, CHANNEL_R(red), CHANNEL_G(red), CHANNEL_B(red));
+    colors[9] =  RGB(0, 128, 128);     // teal
+    colors[10] =  RGB(128, 128, 255); // light blue
+    colors[11] = RGB(0, 0, 255);     // blue
+    colors[12] = RGB(255, 0, 255);   // purple
+    colors[13] = RGB(255, 128, 230);  // pink
 }
 
 void FREE(void* block){
@@ -146,8 +144,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
 
             if (lpDrawItem->CtlID >= IDC_PREDEF_COLOR_WHITE && lpDrawItem->CtlID <= IDC_PREDEF_COLOR_PINK)
             {
-                
-
                 HDC hdc = lpDrawItem->hDC;           // Device context to draw on
                 RECT rc = lpDrawItem->rcItem;         // Rectangle defining the button's area
                 UINT itemState = lpDrawItem->itemState; // State flags (pressed, hovered, focused, etc.)

@@ -12,13 +12,22 @@ void GenerateUI(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
         return;
     }
 
-    vector2i size = {40, 40};
+    vector2i size = {20, 20};
 
     CreateButton(hwnd, hInstance, (vector2i) {0, 0}, size, "WHITE", IDC_PREDEF_COLOR_WHITE, &SelectColor);
-    CreateButton(hwnd, hInstance, (vector2i) {50, 0}, size, "GREEN", IDC_PREDEF_COLOR_GREEN, &SelectColor);
-    CreateButton(hwnd, hInstance, (vector2i) {100, 0}, size, "BLACK", IDC_PREDEF_COLOR_BLACK, &SelectColor);
-    CreateButton(hwnd, hInstance, (vector2i) {150, 0}, size, "YELLOW", IDC_PREDEF_COLOR_YELLOW, &SelectColor);
-    CreateButton(hwnd, hInstance, (vector2i) {200, 0}, size, "BLUE", IDC_PREDEF_COLOR_BLUE, &SelectColor);
+    CreateButton(hwnd, hInstance, (vector2i) {20, 0}, size, "BLACK", IDC_PREDEF_COLOR_BLACK, &SelectColor);
+    CreateButton(hwnd, hInstance, (vector2i) {40, 0}, size, "LIGHT GREY", IDC_PREDEF_COLOR_LIGHT_GREY, &SelectColor);
+    CreateButton(hwnd, hInstance, (vector2i) {60, 0}, size, "DARK GREY", IDC_PREDEF_COLOR_DARK_GREY, &SelectColor);
+    CreateButton(hwnd, hInstance, (vector2i) {80, 0}, size, "RED", IDC_PREDEF_COLOR_RED, &SelectColor);
+    CreateButton(hwnd, hInstance, (vector2i) {100, 0}, size, "ORANGE", IDC_PREDEF_COLOR_ORANGE, &SelectColor);
+    CreateButton(hwnd, hInstance, (vector2i) {120, 0}, size, "YELLOW", IDC_PREDEF_COLOR_YELLOW, &SelectColor);
+    CreateButton(hwnd, hInstance, (vector2i) {0, 20}, size, "LIME", IDC_PREDEF_COLOR_LIME, &SelectColor);
+    CreateButton(hwnd, hInstance, (vector2i) {20, 20}, size, "GREEN", IDC_PREDEF_COLOR_GREEN, &SelectColor);
+    CreateButton(hwnd, hInstance, (vector2i) {40, 20}, size, "TEAL", IDC_PREDEF_COLOR_TEAL, &SelectColor);
+    CreateButton(hwnd, hInstance, (vector2i) {60, 20}, size, "LIGHT BLUE", IDC_PREDEF_COLOR_LIGHT_BLUE, &SelectColor);
+    CreateButton(hwnd, hInstance, (vector2i) {80, 20}, size, "BLUE", IDC_PREDEF_COLOR_BLUE, &SelectColor);
+    CreateButton(hwnd, hInstance, (vector2i) {100, 20}, size, "PURPLE", IDC_PREDEF_COLOR_PURPLE, &SelectColor);
+    CreateButton(hwnd, hInstance, (vector2i) {120, 20}, size, "PINK", IDC_PREDEF_COLOR_PINK, &SelectColor);
 }
 
 HWND CreateButton(HWND hwnd, HINSTANCE hInstance, vector2i pos, vector2i size, char name[], int id, callback* cbfun){
@@ -81,6 +90,9 @@ COLORREF GetButtonColor(UINT idc){
             break;
         case (IDC_PREDEF_COLOR_GREEN):
             return colors[GREEN];
+            break;
+        case (IDC_PREDEF_COLOR_TEAL):
+            return colors[TEAL];
             break;
         case (IDC_PREDEF_COLOR_LIGHT_BLUE):
             return colors[LIGHT_BLUE];
