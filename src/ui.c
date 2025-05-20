@@ -50,9 +50,10 @@ HWND CreateButton(HWND hwnd, HINSTANCE hInstance, vector2i pos, vector2i size, c
 
 void SelectColor(HWND hwnd, int idc){
     selectedColor = GetButtonColor(idc);
+    printf("%d = %d %d %d\n", selectedColor, CHANNEL_R(selectedColor), CHANNEL_G(selectedColor), CHANNEL_B(selectedColor));
 }
 
-uint32_t GetButtonColor(UINT idc){
+COLORREF GetButtonColor(UINT idc){
     switch (idc){
         case (IDC_PREDEF_COLOR_WHITE):
             return colors[WHITE];

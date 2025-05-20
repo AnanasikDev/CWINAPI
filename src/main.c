@@ -11,7 +11,7 @@
 const char gClassName[] = "MyWindowClass";
 BOOL askToQuit = 0;
 struct tagRECT padding = {50, 50, 50, 50};
-uint32_t selectedColor = COLOR(255, 0, 0);
+COLORREF selectedColor = RGB(255, 0, 0);
 // ====================================
 
 int* funcIds = NULL;
@@ -24,28 +24,40 @@ static BITMAPINFO frame_bitmap_info;
 static HBITMAP frame_bitmap = 0;
 static HDC frame_device_context = 0;
 
-int* colors = NULL;
+COLORREF* colors = NULL;
 
 struct sframe frame = {0, 0, NULL};
+
+COLORREF ICRGB(COLORREF rgb){
+    return RGB(CHANNEL_B(rgb), CHANNEL_G(rgb), CHANNEL_R(rgb));
+}
+COLORREF IRGB(int r, int g, int b){
+    return RGB(b, g, r);
+}
+
+#define SRGB(r, g, b) ((COLORREF)((r|g)<<8))|(b<<16)
 
 void Init(){
     printf("Init\n");
     funcIds =           (int*)malloc(DYNAMIC_ELEMENTS_COUNT * sizeof(int));
     funcCallbacks =     (callback**)malloc(DYNAMIC_ELEMENTS_COUNT * sizeof(int));
-    colors =            (int*)malloc(MAX_PREDEF_COLORS * sizeof(int));
-    colors[0] = COLOR(255, 255, 255); // white
-    colors[1] = COLOR(0, 0, 0);       // black
-    colors[2] = COLOR(140, 140, 140); // light grey
-    colors[3] = COLOR(80, 80, 80);    // dark grey
-    colors[4] = COLOR(255, 0, 0);     // red
-    colors[5] = COLOR(255, 128, 0);   // orange
-    colors[6] = COLOR(255, 255, 0);   // yellow
-    colors[7] = COLOR(80, 255, 83);   // lime
-    colors[8] = COLOR(0, 255, 0);     // green
-    colors[9] = COLOR(128, 128, 255); // light blue
-    colors[10] = COLOR(0, 0, 255);    // blue
-    colors[11] = COLOR(255, 0, 255);  // purple
-    colors[12] = COLOR(255, 128, 230);  // pink
+    colors =            (COLORREF*)malloc(MAX_PREDEF_COLORS * sizeof(COLORREF));
+    colors[0] =  RGB(255, 255, 255); // white
+    colors[1] =  RGB(0, 0, 0);       // black
+    colors[2] =  RGB(140, 140, 140); // light grey
+    colors[3] =  RGB(80, 80, 80);    // dark grey
+    colors[4] =  RGB(255, 0, 0);     // red
+    colors[5] =  RGB(255, 128, 0);   // orange
+    colors[6] =  RGB(255, 255, 0);   // yellow
+    colors[7] =  RGB(80, 255, 83);   // lime
+    colors[8] =  RGB(0, 255, 0);     // green
+    colors[9] =  RGB(128, 128, 255); // light blue
+    colors[10] = RGB(0, 0, 255);     // blue
+    colors[11] = RGB(255, 0, 255);   // purple
+    colors[12] = RGB(255, 128, 230);  // pink
+
+    COLORREF red = RGB(254, 0, 0);
+    printf("red = %d = %d %d %d\n", red, CHANNEL_R(red), CHANNEL_G(red), CHANNEL_B(red));
 }
 
 void FREE(void* block){
@@ -132,19 +144,16 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
         {
             LPDRAWITEMSTRUCT lpDrawItem = (LPDRAWITEMSTRUCT)lParam;
 
-            // Check if this message is for one of YOUR owner-drawn buttons
-            // Use the button's control ID to identify it
-            if (lpDrawItem->CtlID >= IDC_PREDEF_COLOR_WHITE && lpDrawItem->CtlID <= IDC_PREDEF_COLOR_PINK) // Assuming your button IDs are in a range
+            if (lpDrawItem->CtlID >= IDC_PREDEF_COLOR_WHITE && lpDrawItem->CtlID <= IDC_PREDEF_COLOR_PINK)
             {
-                // --- Perform Custom Drawing Here ---
-                printf("%d\n", lpDrawItem->CtlID);
+                
 
                 HDC hdc = lpDrawItem->hDC;           // Device context to draw on
                 RECT rc = lpDrawItem->rcItem;         // Rectangle defining the button's area
                 UINT itemState = lpDrawItem->itemState; // State flags (pressed, hovered, focused, etc.)
                 UINT buttonID = lpDrawItem->CtlID;    // The ID of the button being drawn
 
-                COLORREF buttonColor = GetButtonColor(buttonID); // Your function to get color
+                COLORREF buttonColor = GetButtonColor(buttonID);
                 HBRUSH hBrush = CreateSolidBrush(buttonColor);
                 FillRect(hdc, &rc, hBrush);
                 DeleteObject(hBrush);

@@ -3,7 +3,7 @@
 #include <math.h>
 
 void PSetPixel(int x, int y, uint32_t color){
-    frame.pixels[x + y * frame.width] = color;
+    frame.pixels[x + y * frame.width] = ICRGB(color);
 }
 
 void PSetPixelsRect(int x, int y, int width, int height, uint32_t color){

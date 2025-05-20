@@ -21,5 +21,5 @@
 void GenerateUI(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 HWND CreateButton(HWND hwnd, HINSTANCE hInstance, vector2i pos, vector2i size, char name[], int id, callback* cbfun);
 void SelectColor(HWND hwnd, int idc);
-uint32_t GetButtonColor(UINT idc);
+COLORREF GetButtonColor(UINT idc);
 COLORREF ToWinColor(uint32_t color);

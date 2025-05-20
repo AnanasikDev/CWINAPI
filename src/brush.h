@@ -24,5 +24,5 @@ enum PREDEF_COLOR{
 };
 #define MAX_PREDEF_COLORS 13
 
-extern int* colors;
-extern uint32_t selectedColor;
+extern COLORREF* colors;
+extern COLORREF selectedColor;
