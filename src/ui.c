@@ -45,14 +45,15 @@ HWND CreateButton(HWND hwnd, HINSTANCE hInstance, vector2i pos, vector2i size, c
         hInstance,
         NULL
     );
-    funcCallbacks[funcIdCounter] = cbfun;
-    funcIds[funcIdCounter] = id;
-    funcIdCounter++; // increase global ID counter for next element
-
+    
     if (hwndButton == NULL){
         MessageBox(NULL, "Button init failed.", "Error", MB_ICONEXCLAMATION | MB_OK);
         return NULL;
     }
+    
+    funcCallbacks[funcIdCounter] = cbfun;
+    funcIds[funcIdCounter] = id;
+    funcIdCounter++; // increase global ID counter for next element
 
     return hwndButton;
 }

@@ -41,7 +41,7 @@ void Init(){
     printf("Init\n");
     funcIds =           (int*)malloc(DYNAMIC_ELEMENTS_COUNT * sizeof(int));
     funcCallbacks =     (callback**)malloc(DYNAMIC_ELEMENTS_COUNT * sizeof(int));
-    colors =            (COLORREF*)malloc(MAX_PREDEF_COLORS * sizeof(COLORREF));
+    colors =            (COLORREF*)malloc(MAX_PREDEF_COLORS * sizeof(long));
     colors[0] =  RGB(255, 255, 255); // white
     colors[1] =  RGB(0, 0, 0);       // black
     colors[2] =  RGB(140, 140, 140); // light grey
