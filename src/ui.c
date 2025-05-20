@@ -23,11 +23,12 @@ void GenerateUI(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
 
 HWND CreateButton(HWND hwnd, HINSTANCE hInstance, vector2i pos, vector2i size, char name[], int id, callback* cbfun){
     HWND hwndButton = CreateWindowEx(
-        0,
-        //BS_OWNERDRAW,
+        //0,
+        BS_OWNERDRAW,
         "BUTTON",
         name,
-        WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        WS_CHILD | WS_VISIBLE | WS_TABSTOP | BS_OWNERDRAW,
+        //WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
         pos.x, pos.y,
         size.x, size.y,
         hwnd,
@@ -51,7 +52,7 @@ void SelectColor(HWND hwnd, int idc){
     selectedColor = GetButtonColor(idc);
 }
 
-uint32_t GetButtonColor(int idc){
+uint32_t GetButtonColor(UINT idc){
     switch (idc){
         case (IDC_PREDEF_COLOR_WHITE):
             return colors[WHITE];

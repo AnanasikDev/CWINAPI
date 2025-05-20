@@ -128,72 +128,49 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
             EndPaint(hwnd, &paint);
         } break;
 
-        // case WM_DRAWITEM:
-        // {
-        //     LPDRAWITEMSTRUCT lpDrawItem = (LPDRAWITEMSTRUCT)lParam;
+        case WM_DRAWITEM:
+        {
+            LPDRAWITEMSTRUCT lpDrawItem = (LPDRAWITEMSTRUCT)lParam;
 
-        //     // Check if this message is for one of YOUR owner-drawn buttons
-        //     // Use the button's control ID to identify it
-        //     if (lpDrawItem->CtlID >= IDC_PREDEF_COLOR_WHITE && lpDrawItem->CtlID <= IDC_PREDEF_COLOR_PINK) // Assuming your button IDs are in a range
-        //     {
-        //         printf("%d", lpDrawItem->CtlID);
-        //         // --- Perform Custom Drawing Here ---
+            // Check if this message is for one of YOUR owner-drawn buttons
+            // Use the button's control ID to identify it
+            if (lpDrawItem->CtlID >= IDC_PREDEF_COLOR_WHITE && lpDrawItem->CtlID <= IDC_PREDEF_COLOR_PINK) // Assuming your button IDs are in a range
+            {
+                // --- Perform Custom Drawing Here ---
+                printf("%d\n", lpDrawItem->CtlID);
 
-        //         HDC hdc = lpDrawItem->hDC;           // Device context to draw on
-        //         RECT rc = lpDrawItem->rcItem;         // Rectangle defining the button's area
-        //         UINT itemState = lpDrawItem->itemState; // State flags (pressed, hovered, focused, etc.)
-        //         UINT buttonID = lpDrawItem->CtlID;    // The ID of the button being drawn
+                HDC hdc = lpDrawItem->hDC;           // Device context to draw on
+                RECT rc = lpDrawItem->rcItem;         // Rectangle defining the button's area
+                UINT itemState = lpDrawItem->itemState; // State flags (pressed, hovered, focused, etc.)
+                UINT buttonID = lpDrawItem->CtlID;    // The ID of the button being drawn
 
-        //         COLORREF buttonColor = GetButtonColor((int)buttonID); // Your function to get color
-        //         HBRUSH hBrush = CreateSolidBrush(buttonColor);
-        //         FillRect(hdc, &rc, hBrush);
-
-        //         // 4. Add visual feedback based on the button's state
-        //         // Check the itemState flags
-
-        //         // Example: Draw a border when the button is pressed
-        //         // if (itemState & ODS_SELECTED) {
-        //         //     // Draw a slightly inset or darker border
-        //         //     HPEN hPen = CreatePen(PS_SOLID, 2, RGB(0, 0, 0)); // Black border
-        //         //     HGDIOBJ hOldPen = SelectObject(hdc, hPen);
-        //         //     SelectObject(hdc, GetStockObject(NULL_BRUSH)); // Don't fill
-        //         //     Rectangle(hdc, rc.left, rc.top, rc.right, rc.bottom); // Draw border
-        //         //     SelectObject(hdc, hOldPen); // Restore old pen
-        //         //     DeleteObject(hPen);         // Clean up the pen
-        //         // }
-
-        //         // // Example: Draw a focus rectangle if the button has keyboard focus
-        //         // if (itemState & ODS_FOCUS) {
-        //         //     // Draw the standard focus rectangle
-        //         //     DrawFocusRect(hdc, &rc);
-        //         // }
-
-        //          // Example: Draw a highlight when hovered (requires BS_NOTIFY style on button)
-        //         //  if (itemState & ODS_HOTLIGHT) {
-        //         //      HPEN hPen = CreatePen(PS_SOLID, 1, RGB(128, 128, 128)); // Grey highlight border
-        //         //      HGDIOBJ hOldPen = SelectObject(hdc, hPen);
-        //         //      SelectObject(hdc, GetStockObject(NULL_BRUSH));
-        //         //      Rectangle(hdc, rc.left, rc.top, rc.right, rc.bottom);
-        //         //      SelectObject(hdc, hOldPen);
-        //         //      DeleteObject(hPen);
-        //         //  }
-
-        //         DeleteObject(hBrush);
-        //     }
-        //     break;
-        // }
+                COLORREF buttonColor = GetButtonColor(buttonID); // Your function to get color
+                HBRUSH hBrush = CreateSolidBrush(buttonColor);
+                FillRect(hdc, &rc, hBrush);
+                DeleteObject(hBrush);
+            }
+            break;
+        }
 
         case WM_SIZE: {
             frame_bitmap_info.bmiHeader.biWidth  = LOWORD(lParam);
             frame_bitmap_info.bmiHeader.biHeight = HIWORD(lParam);
 
             if(frame_bitmap) DeleteObject(frame_bitmap);
+            // uint32_t* oldColors = NULL;
+            // for (int i = 0; i < frame.width * frame.height; i++){
+            //     oldColors[i] = frame.pixels[i];
+            // }
             frame_bitmap = CreateDIBSection(NULL, &frame_bitmap_info, DIB_RGB_COLORS, (void**)&frame.pixels, 0, 0);
             SelectObject(frame_device_context, frame_bitmap);
+            
+            // for (int i = 0; i < frame.width * frame.height; i++){
+            //     frame.pixels[i] = oldColors[i];
+            // }
 
             frame.width =  LOWORD(lParam);
             frame.height = HIWORD(lParam);
-            InvalidateRect(hwnd, NULL, TRUE);
+            //InvalidateRect(hwnd, NULL, TRUE);
         } break;
 
         default:
