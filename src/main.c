@@ -6,6 +6,7 @@
 #include "graphics.h"
 #include "input.h"
 #include "brush.h"
+#include <commctrl.h>
 
 // ============= SETTINGS =============
 const char gClassName[] = "MyWindowClass";
@@ -84,6 +85,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
     switch (msg){
 
         case WM_CREATE:{
+
+            INITCOMMONCONTROLSEX icc;
+            icc.dwSize = sizeof(icc);
+            icc.dwICC = ICC_BAR_CLASSES; // Specifies which common control classes to load (ICC_BAR_CLASSES includes trackbars)
+            InitCommonControlsEx(&icc);
 
             GenerateUI(hwnd, msg, wParam, lParam);
         }

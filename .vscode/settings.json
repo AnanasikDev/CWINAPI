@@ -10,6 +10,7 @@
         "graphics.h": "c",
         "stdint.h": "c",
         "brush.h": "c",
-        "windowsx.h": "c"
+        "windowsx.h": "c",
+        "commctrl.h": "c"
     }
 }

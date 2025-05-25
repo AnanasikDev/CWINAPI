@@ -9,3 +9,4 @@ add_executable(uiapp
     src/graphics.c
     src/input.c
 )
+target_link_libraries(uiapp PRIVATE Comctl32)

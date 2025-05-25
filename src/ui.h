@@ -16,6 +16,7 @@
 #define IDC_PREDEF_COLOR_BLUE           1021
 #define IDC_PREDEF_COLOR_PURPLE         1022
 #define IDC_PREDEF_COLOR_PINK           1023
+#define IDC_BRUSH_SIZE_SLIDER           1110
 
 #define DYNAMIC_ELEMENTS_COUNT 14
 
@@ -24,3 +25,5 @@ HWND CreateButton(HWND hwnd, HINSTANCE hInstance, vector2i pos, vector2i size, c
 void SelectColor(HWND hwnd, int idc);
 COLORREF GetButtonColor(UINT idc);
 COLORREF ToWinColor(uint32_t color);
+
+HWND WINAPI CreateTrackbar(HWND parentHwnd, HINSTANCE hInstance, vector2i pos, vector2i size, UINT inMinValue, UINT inMaxValue, UINT inSelMin, UINT inSelMax, int idc);

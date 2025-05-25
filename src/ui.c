@@ -1,6 +1,7 @@
 #include "ui.h"
 #include "brush.h"
 #include "commonh.h"
+#include <commctrl.h>
 
 void GenerateUI(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
 
@@ -28,7 +29,46 @@ void GenerateUI(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
     CreateButton(hwnd, hInstance, (vector2i) {80, 20}, size, "BLUE", IDC_PREDEF_COLOR_BLUE, &SelectColor);
     CreateButton(hwnd, hInstance, (vector2i) {100, 20}, size, "PURPLE", IDC_PREDEF_COLOR_PURPLE, &SelectColor);
     CreateButton(hwnd, hInstance, (vector2i) {120, 20}, size, "PINK", IDC_PREDEF_COLOR_PINK, &SelectColor);
+
+    CreateTrackbar(hwnd, hInstance, (vector2i) {150, 0}, (vector2i) {150, 30}, 0, 100, 0, 100, IDC_BRUSH_SIZE_SLIDER);
 }
+
+HWND WINAPI CreateTrackbar(HWND parentHwnd, HINSTANCE hInstance, vector2i pos, vector2i size, UINT inMinValue, UINT inMaxValue, UINT inSelMin, UINT inSelMax, int idc)
+{ 
+    //InitCommonControls(); // loads common control's DLL 
+
+    HWND hwndTrack = CreateWindowEx( 
+        0,                               // no extended styles 
+        TRACKBAR_CLASS,                  // class name 
+        "Trackbar Control",              // title (caption) 
+        WS_CHILD | WS_VISIBLE | TBS_AUTOTICKS | TBS_ENABLESELRANGE,
+        pos.x, pos.y,                          // position 
+        size.x, size.y,                         // size 
+        parentHwnd,                      // parent window 
+        (HMENU)(UINT_PTR)idc,            // control identifier 
+        hInstance,                       // instance 
+        NULL                             // no WM_CREATE parameter 
+        ); 
+
+    SendMessage(hwndTrack, TBM_SETRANGE, 
+        (WPARAM) TRUE,                   // redraw flag 
+        (LPARAM) MAKELONG(inMinValue, inMaxValue));  // min. & max. positions
+        
+    SendMessage(hwndTrack, TBM_SETPAGESIZE, 
+        0, (LPARAM) 4);                  // new page size 
+
+    SendMessage(hwndTrack, TBM_SETSEL, 
+        (WPARAM) FALSE,                  // redraw flag 
+        (LPARAM) MAKELONG(inSelMin, inSelMax)); 
+        
+    SendMessage(hwndTrack, TBM_SETPOS, 
+        (WPARAM) TRUE,                   // redraw flag 
+        (LPARAM) inSelMin); 
+
+    SetFocus(hwndTrack); 
+
+    return hwndTrack; 
+} 
 
 HWND CreateButton(HWND hwnd, HINSTANCE hInstance, vector2i pos, vector2i size, char name[], int id, callback* cbfun){
     HWND hwndButton = CreateWindowEx(
